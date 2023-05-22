@@ -1,0 +1,9 @@
+{
+  "host": "http://localhost:8080/api/authentication/test",
+  "method": "POST",
+  "content-type": "",
+  "body": [
+    "test,test,test,test;",
+    "test1,124,124,124;"
+  ]
+}
