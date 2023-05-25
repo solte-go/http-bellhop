@@ -1,9 +1,22 @@
 {
-  "host": "http://localhost:8080/api/authentication/test",
+  "env": [
+    {
+      "name": "dev",
+      "host": "http://localhost:8080/api/authentication/test"
+    },
+    {
+      "name": "lab",
+      "host": "http://localhost:8011/api/authentication/test"
+    }
+  ],
   "method": "GET",
-  "content-type": "",
-  "body": [
-    "test,test,test,test;",
-    "test1,124,124,124;"
-  ]
+  "headers": [
+    {
+      "Content-Type": "application/json"
+    },
+    {
+      "Content-Type": "application/json"
+    }
+  ],
+  "body": "{ \"username\": \"admin\", \"password\": \"admin\"}"
 }
