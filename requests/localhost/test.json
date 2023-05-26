@@ -1,9 +1,24 @@
 {
-  "host": "http://localhost:8080/api/authentication/test",
+  "config_name": "Dir Test Request - 1",
+  "environment": [
+    {
+      "name": "dev",
+      "host": "http://localhost:8080/api/authentication/test"
+    },
+    {
+      "name": "lab",
+      "host": "http://localhost:8080/api/authentication/test"
+    }
+  ],
   "method": "POST",
-  "content-type": "",
-  "body": [
-    "test,test,test,test;",
-    "test1,124,124,124;"
-  ]
+  "headers": [
+    {
+      "Content-Type": "application/json"
+    },
+    {
+      "Content-Type": "application/json"
+    }
+  ],
+  "body": "{ \"username\": \"admin\", \"password\": \"admin\"}",
+  "expected_status": "200"
 }

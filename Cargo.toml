@@ -15,3 +15,4 @@ tokio = { version = "1", features = ["full"] }
 structopt = "0.3.26"
 thiserror = "1"
 reqwest = { version = "0.11.18", features = ["blocking", "json", "cookies", ] }
+http = "0.2.9"

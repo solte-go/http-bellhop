@@ -8,12 +8,15 @@ use std::path::Path;
 // #[derive(Serialize, Deserialize, Debug, Default)] //TODO Git it up
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Request {
-    pub env: fields::environment::Configs,
+    #[serde(rename = "config_name")]
+    pub name: fields::Name,
+    pub environment: fields::environment::Configs,
     #[serde()]
-    pub method: fields::method::Method,
+    pub method: fields::method::CfgMethod,
     #[serde(rename = "headers")]
     pub headers: fields::headers::Headers,
     pub body: fields::Body,
+    pub expected_status: fields::expected_status::ExpectedStatus,
 }
 
 // impl Default for Request {
@@ -32,7 +35,6 @@ pub fn deserialize_data(path: &Path, env: &str) -> crate::domain::Request {
     let mut contents = String::new();
     file.read_to_string(&mut contents).expect("Error:");
     let request: Request = serde_json::from_str(&contents).expect("Error:");
-    // println!("{:#?}", request);
     request.from(env)
 
     //TODO
@@ -42,10 +44,12 @@ impl Request {
     pub fn from(self, env: &str) -> crate::domain::Request {
         use crate::domain::Request;
         Request {
-            host: self.env.into_inner(env),
+            name: self.name.into_inner(),
+            host: self.environment.into_inner(env),
             method: self.method,
             headers: self.headers.into_inner(),
             body: self.body.into(),
+            expected_status: self.expected_status.into_inner(),
         }
     }
 }

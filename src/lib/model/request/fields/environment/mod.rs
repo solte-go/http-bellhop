@@ -20,10 +20,8 @@ pub struct Configs(Vec<Config>);
 impl Configs {
     pub fn into_inner(self, env: &str) -> String {
         if env.to_lowercase() == "dev" {
-            return match self.check_if_exist(Name::Dev) {
-                Ok(v) => v,
-                Err(e) => e.to_string(),
-            };
+            let ok: Option<&Config> = self.0.iter().find(|&v| v.name == Some(Name::Dev));
+            return ok.unwrap().host.clone().into_inner();
         }
         if env.to_lowercase() == "stage" {
             return match self.check_if_exist(Name::Stage) {
@@ -32,10 +30,8 @@ impl Configs {
             };
         }
         if env.to_lowercase() == "lab" {
-            return match self.check_if_exist(Name::Lab) {
-                Ok(v) => v,
-                Err(e) => e.to_string(),
-            };
+            let ok: Option<&Config> = self.0.iter().find(|&v| v.name == Some(Name::Lab));
+            return ok.unwrap().host.clone().into_inner();
         }
         if env.to_lowercase() == "prod" {
             return match self.check_if_exist(Name::Prod) {
@@ -49,7 +45,7 @@ impl Configs {
 
     fn check_if_exist(self, env: Name) -> Result<String, EnvironmentError> {
         if let Some(value) = self.into_iter().next() {
-            return if value.name.unwrap_or(Name::Default) == env {
+            return if value.name.unwrap_or_default() == env {
                 Ok(value.host.into_inner())
             } else {
                 Err(EnvironmentError::NotFound)
@@ -94,6 +90,15 @@ impl Default for Config {
         }
     }
 }
+
+// impl IntoIterator<Item = i64> for TestStruct {
+//     type Item = i64;
+//     type IntoIter = std::vec::IntoIter<Self::Item>;
+//
+//     fn into_iter(self) -> Self::IntoIter {
+//         self.fields.into_iter()
+//     }
+// }
 
 trait TitleCase {
     fn title(&self) -> String;

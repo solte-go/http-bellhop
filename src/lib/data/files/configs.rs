@@ -24,12 +24,16 @@ impl From<io::Error> for FilesError {
     }
 }
 
-pub fn get_cfg(file: &str) -> Result<PathBuf, FilesError> {
-    // let path = format!("{}{}", CONFIG_DIR, file);
-    let file = PathBuf::from(file);
+pub fn get_cfg(path: &str) -> Result<PathBuf, FilesError> {
+    let file = PathBuf::from(path);
     if file.is_file() {
         return Ok(file);
     }
+
+    if file.is_dir() {
+        return Ok(file);
+    }
+
     Err(FileNotFound)
 }
 
@@ -42,7 +46,7 @@ pub fn get_files(dir: &Path, files: &mut Vec<PathBuf>) -> Result<(), FilesError>
                 get_files(&path, files)?;
             } else {
                 files.push(entry.path());
-                println!("{:?}", entry.path())
+                // println!("{:?}", entry.path()) // uncomment to check all files
             }
         }
     }

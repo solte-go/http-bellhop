@@ -27,8 +27,8 @@ const DEFAULT_ENV: &str = "default";
 struct Opt {
     // #[structopt(subcommand)]
     // command: Command,
-    #[structopt(default_value = "http://127.0.0.1:8000", env = "BELLHOP_ADDR")]
-    addr: String,
+    // #[structopt(default_value = "http://127.0.0.1:8000", env = "BELLHOP_ADDR")]
+    // addr: String,
     #[structopt(short, long, help = "what env setup should be used")]
     env: Option<String>,
     #[structopt(short, long, help = "location of json file to run")]
@@ -49,7 +49,7 @@ fn run(opt: Opt) -> Result<(), Box<dyn Error>> {
         let path = get_cfg(&opt.file.unwrap_or_else(|| "undefined".to_string()))?;
         let req = request::deserialize_data(path.as_path(), &env);
         match req.do_request() {
-            Ok(()) => println!("Done"),
+            Ok(()) => (),
             Err(e) => println!("Request filed: {:?}", e),
         }
     } else if opt.dir.is_some() {
@@ -60,58 +60,22 @@ fn run(opt: Opt) -> Result<(), Box<dyn Error>> {
             Ok(_) => {
                 for file in files {
                     let req = request::deserialize_data(file.as_path(), &env);
+                    match req.do_request() {
+                        Ok(()) => (),
+                        Err(e) => println!("Request filed: {:?}", e),
+                    }
                 }
             }
             Err(e) => println!("{:#?}", e),
         }
     }
+    println!("-----\nDone");
     Ok(())
 }
-
-// #[tokio::main]
 
 fn main() {
     let opt = Opt::from_args();
     if let Err(e) = run(opt) {
         eprintln!("An error occurred: {}", e)
     }
-
-    // let mut files = vec![];
-    // let path = Path::new("./requests");
-    // files::get_files(path, &mut files).expect("TODO: panic message");
-    //
-    // let mut num = 0;
-    //
-    // println!("== Pick config file for request ==");
-    // for file in &files {
-    //     println!("{:?}. {:?}", num, file.file_name().to_owned());
-    //     num += 1;
-    // }
-    // println!("Config:");
-    // let input = files::get_input();
-    // let mut req= Request::default();
-    //
-    // match input {
-    //     None => {
-    //         println!("Wrong input")
-    //     }
-    //     Some(i) => {
-    //         println!("{:?}", i);
-    //         req = parser::get_cfg_data(&files[i]);
-    //         println!("{:?}", req.body)
-    //     }
-    // }
-    // println!("{:?}", req.body);
-    //
-    // // let client = reqwest::Client::builder().build()?;
-    // let resp = reqwest::Client::new()
-    //     .post(&req.host)
-    //     .json(&req.body)
-    //     .send()
-    //     .await?;
-    // // .json()
-    // // .await?;
-    //
-    // println!("{:#?}", resp);
-    // Ok(())
 }
