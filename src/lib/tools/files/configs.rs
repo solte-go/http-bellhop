@@ -1,12 +1,10 @@
-use crate::data::files::configs::FilesError::{FileNotFound, FolderNotFound};
+use crate::tools::files::configs::FilesError::{FileNotFound, FolderNotFound};
 use std::path::PathBuf;
 use std::{
-    fs::{self, DirEntry},
+    fs::{self},
     io,
     path::Path,
 };
-
-// const CONFIG_DIR: &str = "./requests/";
 
 #[derive(thiserror::Error, Debug)]
 pub enum FilesError {

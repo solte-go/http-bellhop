@@ -1,5 +1,6 @@
-use bellhop::data::files::configs::{get_cfg, get_files};
-use bellhop::model::request;
+use bellhop::domain::config;
+use bellhop::service::Request;
+use bellhop::tools::files::configs::{get_cfg, get_files};
 use std::error::Error;
 use std::string::ToString;
 use structopt::StructOpt;
@@ -39,15 +40,16 @@ struct Opt {
 fn run(opt: Opt) -> Result<(), Box<dyn Error>> {
     let mut env = String::new();
     if opt.env.is_some() {
-        env = opt.env.unwrap();
+        env = opt.env.unwrap_or("default".to_owned());
     } else {
-        env = DEFAULT_ENV.to_string();
+        env = DEFAULT_ENV.to_owned();
     }
 
     if opt.file.is_some() {
-        let path = get_cfg(&opt.file.unwrap_or_else(|| "undefined".to_string()))?;
-        let req = request::deserialize_data(path.as_path(), &env)?;
-        match req.do_request() {
+        let path = get_cfg(&opt.file.unwrap_or("undefined".to_string()))?;
+        let cfg = config::deserialize_data(path.as_path())?;
+
+        match cfg.to_request(&env)?.do_request() {
             Ok(()) => (),
             Err(e) => println!("Request filed: {:?}", e),
         }
@@ -58,8 +60,8 @@ fn run(opt: Opt) -> Result<(), Box<dyn Error>> {
         match res {
             Ok(_) => {
                 for file in files {
-                    let req = request::deserialize_data(file.as_path(), &env)?;
-                    match req.do_request() {
+                    let cfg = config::deserialize_data(file.as_path())?;
+                    match cfg.to_request(&env)?.do_request() {
                         Ok(()) => (),
                         Err(e) => println!("Request filed: {:?}", e),
                     }
