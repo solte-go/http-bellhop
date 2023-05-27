@@ -1,9 +1,16 @@
 pub mod fields;
 
+use crate::model::request::fields::environment::EnvironmentError;
 use serde::{Deserialize, Serialize};
 use std::fs::File;
 use std::io::prelude::*;
 use std::path::Path;
+
+#[derive(thiserror::Error, Debug)]
+pub enum FieldError {
+    #[error("bad argument error: {0}")]
+    BadArg(#[from] EnvironmentError),
+}
 
 // #[derive(Serialize, Deserialize, Debug, Default)] //TODO Git it up
 #[derive(Serialize, Deserialize, Debug)]
@@ -30,7 +37,7 @@ pub struct Request {
 //     }
 // }
 
-pub fn deserialize_data(path: &Path, env: &str) -> crate::domain::Request {
+pub fn deserialize_data(path: &Path, env: &str) -> Result<crate::domain::Request, FieldError> {
     let mut file = File::open(path).expect("Error:");
     let mut contents = String::new();
     file.read_to_string(&mut contents).expect("Error:");
@@ -41,15 +48,17 @@ pub fn deserialize_data(path: &Path, env: &str) -> crate::domain::Request {
 }
 
 impl Request {
-    pub fn from(self, env: &str) -> crate::domain::Request {
+    pub fn from(self, env: &str) -> Result<crate::domain::Request, FieldError> {
         use crate::domain::Request;
-        Request {
+
+        let host = self.environment.into_inner(env)?;
+        Ok(Request {
             name: self.name.into_inner(),
-            host: self.environment.into_inner(env),
+            host,
             method: self.method,
             headers: self.headers.into_inner(),
             body: self.body.into(),
             expected_status: self.expected_status.into_inner(),
-        }
+        })
     }
 }

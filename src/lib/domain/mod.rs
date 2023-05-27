@@ -62,7 +62,7 @@ impl Request {
                     );
                     return Ok(());
                 } else {
-                    print!(
+                    println!(
                         "Name: {} --- Failed!\nReason: {}",
                         self.name.as_str(),
                         UnexpectedError(e.source().unwrap().to_string())

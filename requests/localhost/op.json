@@ -7,7 +7,7 @@
     },
     {
       "name": "lab",
-      "host": "http://localhost:8080/api/authentication/test"
+      "host": "http://localhost:8081/api/authentication/test"
     }
   ],
   "method": "PUT",
