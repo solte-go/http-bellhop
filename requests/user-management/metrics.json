@@ -1,0 +1,24 @@
+{
+    "config_name": "user-management/healthz",
+    "environment": [
+        {
+            "name": "dev",
+            "host": "http://localhost:8091/healthz"
+        },
+        {
+            "name": "lab",
+            "host": "http://localhost:8091/healthz"
+        }
+    ],
+    "method": "GET",
+    "headers": [
+        {
+            "Content-Type": "application/json"
+        },
+        {
+            "Content-Type": "application/json"
+        }
+    ],
+    "body": "",
+    "expected_status": "200"
+}

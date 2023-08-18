@@ -1,16 +1,16 @@
 {
-  "config_name": "Dir Test Request - 1",
+  "config_name": "user",
   "environment": [
     {
       "name": "dev",
-      "host": "http://localhost:8080/api/authentication/test"
+      "host": "http://localhost:8091/metrics"
     },
     {
       "name": "lab",
       "host": "http://localhost:8083/api/authentication/test"
     }
   ],
-  "method": "POST",
+  "method": "GET",
   "headers": [
     {
       "Content-Type": "application/json"
